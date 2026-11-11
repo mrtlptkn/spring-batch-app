@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS orders (
+order_id   BIGINT PRIMARY KEY,
+customer   VARCHAR(100) NOT NULL,
+amount     DECIMAL(12,2) NOT NULL,
+order_date DATE NOT NULL
+);

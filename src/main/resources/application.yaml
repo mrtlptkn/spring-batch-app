@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: spring-batch-app
+  datasource:
+    # Dosya tabanlı H2: veriler ve BATCH_* metadata tabloları uygulama kapansa da korunur
+    url: jdbc:h2:file:./data/springbatchdb;AUTO_SERVER=TRUE
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true                       # http://localhost:8080/h2-console
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/order-schema.sql
+
+  batch:
+    job:
+      enabled: false                      # Job'ları açılışta otomatik çalıştırma; biz controller/runner ile başlatıyoruz
+    jdbc:
+      initialize-schema: ALWAYS  # Tabloları otomatik olarak oluşturma
+
+batch:
+  reject-threshold: 5   # Bu sayıdan fazla kayıt atlanırsa kredi kontrolü yapılmaz
+  input-dir: ./data/input
+  output-dir: ./data/output
+  archive-dir: ./data/archive
