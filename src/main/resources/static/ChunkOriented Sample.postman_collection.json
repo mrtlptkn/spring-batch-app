@@ -1,0 +1,95 @@
+{
+  "info": {
+    "_postman_id": "aec90c4e-f734-48df-9f7c-139c87e1b67a",
+    "name": "ChunkOriented Sample",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49800903",
+    "_collection_link": "https://go.postman.co/collection/49800903-aec90c4e-f734-48df-9f7c-139c87e1b67a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "OrderImportJobRun",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/order-import/run?runDate=2026-11-11",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "order-import",
+            "run"
+          ],
+          "query": [
+            {
+              "key": "runDate",
+              "value": "2026-11-11"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreditCheck",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/credit-check/run?runDate=2026-11-22",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "credit-check",
+            "run"
+          ],
+          "query": [
+            {
+              "key": "runDate",
+              "value": "2026-11-22"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PipelineJob",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/pipeline-job/run?runDate=2026-11-12",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "pipeline-job",
+            "run"
+          ],
+          "query": [
+            {
+              "key": "runDate",
+              "value": "2026-11-12"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
