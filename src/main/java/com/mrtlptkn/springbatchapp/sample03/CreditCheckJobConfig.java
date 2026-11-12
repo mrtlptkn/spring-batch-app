@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -50,6 +51,13 @@ public class CreditCheckJobConfig {
     }
 
     @Bean
+    public ItemWriter<CreditCheck> creditCheckDbWriter(DataSource dataSource){
+        return chunk -> {
+          System.out.println("creditCheckDbWriter: " + chunk);
+        };
+    }
+
+    @Bean
     public JdbcBatchItemWriter<CreditCheck> creditCheckWriter(DataSource dataSource){
         return  new JdbcBatchItemWriterBuilder<CreditCheck>().dataSource(dataSource)
                 .sql("INSERT INTO order_credit_checks (order_id, customer, approved) " +
@@ -66,7 +74,7 @@ public class CreditCheckJobConfig {
     // her bir 10 luk veri için 5 write tetiklenecek atılacak.
 
     @Bean
-    public Step creditCheckStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,JdbcPagingItemReader<Order> orderDbReader, JdbcBatchItemWriter<CreditCheck> creditCheckWriter){
+    public Step creditCheckStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,JdbcPagingItemReader<Order> orderDbReader, ItemWriter<CreditCheck> creditCheckDbWriter){
 
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         backOffPolicy.setBackOffPeriod(200); // 200ms retry edecek
@@ -76,7 +84,7 @@ public class CreditCheckJobConfig {
                 .<Order, CreditCheck>chunk(2, platformTransactionManager)
                 .reader(orderDbReader)
                 .processor(creditCheckProcessor)
-                .writer(creditCheckWriter)
+                .writer(creditCheckDbWriter)
                 .faultTolerant()
                 .backOffPolicy(backOffPolicy)
                 .retry(TransientServiceException.class) // bu gelirse retry et
