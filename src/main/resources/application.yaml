@@ -12,7 +12,7 @@ spring:
   sql:
     init:
       mode: always
-      schema-locations: classpath:sql/order-schema.sql
+      schema-locations: classpath:sql/order-schema.sql,classpath:sql/credit-check-schema.sql
 
   batch:
     job:
