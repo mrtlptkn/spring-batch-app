@@ -35,7 +35,7 @@ public class AlertTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
-        Path alertFile = Path.of(outputDir + "alert-" + runDate + ".txt");
+        Path alertFile = Path.of(outputDir + "/alert-" + runDate + ".txt");
         Files.createDirectories(alertFile.getParent());
         Files.writeString(alertFile, "Yüksek red oranı: " + runDate + " için kredi kontrolü atlandı" + System.lineSeparator());
 

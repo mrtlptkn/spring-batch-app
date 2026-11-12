@@ -1,27 +1,5 @@
 raw_data,type,reason
 1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
 1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
-1006,Elif,,onSkipInRead, Parsing error at line: 6 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[1006,Elif,]
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
-1006,Elif,,onSkipInRead, Parsing error at line: 6 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[1006,Elif,]
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
-1006,Elif,,onSkipInRead, Parsing error at line: 6 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[1006,Elif,]
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
-1006,Elif,,onSkipInRead, Parsing error at line: 6 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[1006,Elif,]
-,onSkipInRead, Parsing error at line: 4 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[]
-,onSkipInRead, Parsing error at line: 4 in resource=[file [C:\Users\merta\Desktop\Spring-Batch-Apps\spring-batch-app\.\data\input\orders-2026-11-11.csv]], input=[]
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1006,Elif,,,onSkipInProcess, empty String
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
 1006,Elif,,,onSkipInProcess, empty String
 1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0

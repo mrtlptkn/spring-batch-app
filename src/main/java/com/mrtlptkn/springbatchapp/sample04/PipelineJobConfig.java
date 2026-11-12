@@ -1,9 +1,11 @@
 package com.mrtlptkn.springbatchapp.sample04;
 
+import com.mrtlptkn.springbatchapp.sample03.CreditCheck;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -17,10 +19,12 @@ public class PipelineJobConfig {
 
     private final AlertTasklet alertTasklet;
     private final ReportTasklet reportTasklet;
+    private final  OrderImportDecider orderImportDecider;
 
-    public PipelineJobConfig(AlertTasklet alertTasklet,ReportTasklet reportTasklet) {
+    public PipelineJobConfig(AlertTasklet alertTasklet,ReportTasklet reportTasklet, OrderImportDecider orderImportDecider) {
         this.alertTasklet = alertTasklet;
         this.reportTasklet = reportTasklet;
+        this.orderImportDecider = orderImportDecider;
     }
 
 
@@ -47,25 +51,55 @@ public class PipelineJobConfig {
     }
 
 
-    @Bean
-    public Job pipelineJob(JobRepository jobRepository,Step alertStep,Step reportStep){
+//    @Bean("pipelineTestJob")
+//    public Job pipelineTestJob(JobRepository jobRepository,Step alertStep,Step reportStep){
+//
+//        SimpleFlow alertFlow = new FlowBuilder<SimpleFlow>("alertFlow")
+//                .start(alertStep)
+//                .build();
+//        SimpleFlow reportFlow = new FlowBuilder<SimpleFlow>("reportFlow")
+//                .start(reportStep)
+//                .build();
+//
+//        // İki akışı iki farklı step birbirinden bağımsız olarak çalıştırmak için split kullanıyoruz. Split ile iki farklı akışı aynı anda çalıştırabiliriz.
+//        // Yukarıdaki split edilen step chunk-oriented step de olabilir.
+//        SimpleFlow splitFlow = new FlowBuilder<SimpleFlow>("splitFlow")
+//                .split(pipelineTaskExecutor())
+//                .add(alertFlow,reportFlow).build();
+//
+//
+//        return new JobBuilder("pipelineJob",jobRepository)
+//                .start(splitFlow).end().build();
+//    }
 
-        SimpleFlow alertFlow = new FlowBuilder<SimpleFlow>("alertFlow")
-                .start(alertStep)
-                .build();
+
+    @Bean
+    public Job pipelineJob(JobRepository jobRepository,Step prepareStep,Step orderImportStep, Step creditCheckStep, Step alertStep,Step reportStep,ThreadPoolTaskExecutor pipelineTaskExecutor){
+
+        SimpleFlow creditFlow = new FlowBuilder<SimpleFlow>("creditFlow").start(creditCheckStep).build();
+
         SimpleFlow reportFlow = new FlowBuilder<SimpleFlow>("reportFlow")
                 .start(reportStep)
                 .build();
 
-        // İki akışı iki farklı step birbirinden bağımsız olarak çalıştırmak için split kullanıyoruz. Split ile iki farklı akışı aynı anda çalıştırabiliriz.
-        // Yukarıdaki split edilen step chunk-oriented step de olabilir.
-        SimpleFlow splitFlow = new FlowBuilder<SimpleFlow>("splitFlow")
-                .split(pipelineTaskExecutor())
-                .add(alertFlow,reportFlow).build();
+        SimpleFlow alertFlow = new FlowBuilder<SimpleFlow>("alertFlow").start(alertStep).build();
 
 
-        return new JobBuilder("pipelineJob",jobRepository)
-                .start(splitFlow).end().build();
+        SimpleFlow importOrderFlow = new FlowBuilder<SimpleFlow>("importOrderFlow").start(prepareStep).next(orderImportStep).build();
+
+        // eğer decider üzerinde takılmazsak aşağıdaki flow bağlayacağız
+        SimpleFlow continueFlow = new FlowBuilder<SimpleFlow>("continueFlow").split(pipelineTaskExecutor)
+                .add(creditFlow,reportFlow).build();
+
+
+        return  new JobBuilder("pipelineJob",jobRepository)
+                .start(importOrderFlow)
+                .next(orderImportDecider)
+                .on("HIGH_REJECT").to(alertFlow)// to ile bir flowdan yada bir stepden başka bir step yada flow geçebiliriz. Geçiş için kullanılan tanımlama
+                //.on("CONTINUE").to(continueFlow)
+                .from(orderImportDecider).on("CONTINUE").to(continueFlow)
+                .end().build();
+
     }
 
 
