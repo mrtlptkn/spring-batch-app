@@ -85,7 +85,12 @@ public class PipelineJobConfig {
         SimpleFlow alertFlow = new FlowBuilder<SimpleFlow>("alertFlow").start(alertStep).build();
 
 
-        SimpleFlow importOrderFlow = new FlowBuilder<SimpleFlow>("importOrderFlow").start(prepareStep).next(orderImportStep).build();
+        // Not: ayrı bir flow olarak işaretlediğimiz için stepExecution Flow içerisinde kaybettik. Dikkat.
+        // Bu sebeple bu kısmı iptal edip bunun yerine aşağıdaki şekilde bağladık
+        // start(prepareStep)
+        // .next(orderImportStep)
+        // .next(orderImportDecider)
+//        SimpleFlow importOrderFlow = new FlowBuilder<SimpleFlow>("importOrderFlow").start(prepareStep).next(orderImportStep).build();
 
         // eğer decider üzerinde takılmazsak aşağıdaki flow bağlayacağız
         SimpleFlow continueFlow = new FlowBuilder<SimpleFlow>("continueFlow").split(pipelineTaskExecutor)
@@ -93,7 +98,8 @@ public class PipelineJobConfig {
 
 
         return  new JobBuilder("pipelineJob",jobRepository)
-                .start(importOrderFlow)
+                .start(prepareStep)
+                .next(orderImportStep)
                 .next(orderImportDecider)
                 .on("HIGH_REJECT").to(alertFlow)// to ile bir flowdan yada bir stepden başka bir step yada flow geçebiliriz. Geçiş için kullanılan tanımlama
                 //.on("CONTINUE").to(continueFlow)
