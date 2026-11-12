@@ -82,6 +82,10 @@ public class PipelineJobConfig {
                 .start(reportStep)
                 .build();
 
+        // eğer decider üzerinde takılmazsak aşağıdaki flow bağlayacağız
+        SimpleFlow continueFlow = new FlowBuilder<SimpleFlow>("continueFlow").split(pipelineTaskExecutor)
+                .add(creditFlow,reportFlow).build();
+
         SimpleFlow alertFlow = new FlowBuilder<SimpleFlow>("alertFlow").start(alertStep).build();
 
 
@@ -90,21 +94,30 @@ public class PipelineJobConfig {
         // start(prepareStep)
         // .next(orderImportStep)
         // .next(orderImportDecider)
-//        SimpleFlow importOrderFlow = new FlowBuilder<SimpleFlow>("importOrderFlow").start(prepareStep).next(orderImportStep).build();
-
-        // eğer decider üzerinde takılmazsak aşağıdaki flow bağlayacağız
-        SimpleFlow continueFlow = new FlowBuilder<SimpleFlow>("continueFlow").split(pipelineTaskExecutor)
-                .add(creditFlow,reportFlow).build();
+        // Job, bir decider'ı çağırırken StepExecution parametresini, bir önceki state doğrudan bir Step ise o step'ten alır. Önceki state bir Flow olduğunda (importFlow),
+        //  içindeki step'ler flow'un kendi executor'ında çalışır ve son step execution job seviyesine aktarılmaz. Bu yüzden decider'a null gider.
+        // Eğer flow akışını bozmadan decider erişmek istersek o zaman stepExecution nesnesine JobExecution üzerinden erişmemiz gerekir.
+        SimpleFlow importFlow = new FlowBuilder<SimpleFlow>("importOrderFlow").start(prepareStep).next(orderImportStep).build();
 
 
         return  new JobBuilder("pipelineJob",jobRepository)
-                .start(prepareStep)
-                .next(orderImportStep)
+                .start(importFlow)
                 .next(orderImportDecider)
-                .on("HIGH_REJECT").to(alertFlow)// to ile bir flowdan yada bir stepden başka bir step yada flow geçebiliriz. Geçiş için kullanılan tanımlama
-                //.on("CONTINUE").to(continueFlow)
-                .from(orderImportDecider).on("CONTINUE").to(continueFlow)
+                .on("HIGH_REJECT").to(alertFlow)
+                .from(orderImportDecider)
+                .on("CONTINUE").to(continueFlow)
                 .end().build();
+
+        // Direk olarak Step Execution üzerinden erişmek istersek.
+
+//        return  new JobBuilder("pipelineJob",jobRepository)
+//                .start(prepareStep)
+//                .next(orderImportStep)
+//                .next(orderImportDecider)
+//                .on("HIGH_REJECT").to(alertFlow)
+//                .from(orderImportDecider)
+//                .on("CONTINUE").to(continueFlow)
+//                .end().build();
 
     }
 

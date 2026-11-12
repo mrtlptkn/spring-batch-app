@@ -21,11 +21,20 @@ public class OrderImportDecider implements JobExecutionDecider
 
         // Bazı veritabanı servisleri yada api servislerin üzerinden kararları alıacak çağırılar burada yapılarbilir. Biz şuan Spring Batch sağladığı bilgiler ile bir karar aldık.
 
+
+        StepExecution importStep = jobExecution.getStepExecutions().stream()
+                .filter(se -> se.getStepName().equals("orderImportStep")) // step adını kendi tanımınla değiştir
+                .findFirst()
+                .orElseThrow();
+
+
         // toplamda rejected edilen kayıt sayısı
-        long rejected =
-                stepExecution.getReadSkipCount() +
-                        stepExecution.getProcessSkipCount() +
-                        stepExecution.getWriteSkipCount();
+//        long rejected =
+//                stepExecution.getReadSkipCount() +
+//                        stepExecution.getProcessSkipCount() +
+//                        stepExecution.getWriteSkipCount();
+
+        long rejected = importStep.getReadSkipCount() + importStep.getProcessSkipCount() + importStep.getWriteSkipCount();
 
         if(rejected > rejectThreshold) {
             return new FlowExecutionStatus("HIGH_REJECT");

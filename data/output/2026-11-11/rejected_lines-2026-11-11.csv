@@ -1,5 +1,0 @@
-raw_data,type,reason
-1003,Mehmet,,2026-11-07,onSkipInProcess, empty String
-1004,Zeynep,abc,2026-11-07,onSkipInProcess, For input string: "abc"
-1006,Elif,,,onSkipInProcess, empty String
-1005,Can,99.90,07-11-2026,onSkipInProcess, Text '07-11-2026' could not be parsed at index 0
