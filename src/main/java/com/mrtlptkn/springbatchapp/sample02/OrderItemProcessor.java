@@ -30,11 +30,11 @@ public class OrderItemProcessor implements ItemProcessor<RawOrder, Order> {
         try {
             id = Long.parseLong(rawOrder.orderId().trim());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("order_id sayı değil");
+            throw new InvalidOrderException("order_id sayı değil");
         }
 
         if(rawOrder.customer() == null || rawOrder.customer().isBlank()){
-            throw new IllegalArgumentException("müşteri boş");
+            throw new InvalidOrderException("müşteri boş");
         }
 
         BigDecimal amount;
@@ -42,7 +42,7 @@ public class OrderItemProcessor implements ItemProcessor<RawOrder, Order> {
         try{
             amount = BigDecimal.valueOf(Double.parseDouble(rawOrder.amount().trim()));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(e);
+            throw new InvalidOrderException(e.getMessage());
         }
 
         LocalDate orderDate;
@@ -50,7 +50,7 @@ public class OrderItemProcessor implements ItemProcessor<RawOrder, Order> {
         try{
             orderDate = LocalDate.parse(rawOrder.orderDate().trim());
         } catch (Exception e){
-            throw new IllegalArgumentException(e);
+            throw new InvalidOrderException(e.getMessage());
         }
 
         // kendimiz bir logic duruma exception fırlatmayı bir jobParametersdan okunan bir değere bağladık.
