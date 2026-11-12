@@ -25,3 +25,13 @@ batch:
   input-dir: ./data/input
   output-dir: ./data/output
   archive-dir: ./data/archive
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core: DEBUG
+    org:
+      springframework:
+        batch:
+          core: DEBUG
+          item: DEBUG

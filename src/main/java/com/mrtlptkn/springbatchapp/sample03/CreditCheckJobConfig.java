@@ -51,7 +51,7 @@ public class CreditCheckJobConfig {
     }
 
     @Bean
-    public ItemWriter<CreditCheck> creditCheckDbWriter(DataSource dataSource){
+    public ItemWriter<CreditCheck> creditCheckDbWriter(){
         return chunk -> {
           System.out.println("creditCheckDbWriter: " + chunk);
         };
@@ -74,7 +74,7 @@ public class CreditCheckJobConfig {
     // her bir 10 luk veri için 5 write tetiklenecek atılacak.
 
     @Bean
-    public Step creditCheckStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,JdbcPagingItemReader<Order> orderDbReader, ItemWriter<CreditCheck> creditCheckDbWriter){
+    public Step creditCheckStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,JdbcPagingItemReader<Order> orderDbReader, JdbcBatchItemWriter<CreditCheck> creditCheckWriter){
 
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         backOffPolicy.setBackOffPeriod(200); // 200ms retry edecek
@@ -84,7 +84,7 @@ public class CreditCheckJobConfig {
                 .<Order, CreditCheck>chunk(2, platformTransactionManager)
                 .reader(orderDbReader)
                 .processor(creditCheckProcessor)
-                .writer(creditCheckDbWriter)
+                .writer(creditCheckWriter)
                 .faultTolerant()
                 .backOffPolicy(backOffPolicy)
                 .retry(TransientServiceException.class) // bu gelirse retry et
