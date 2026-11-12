@@ -115,8 +115,8 @@ public class OrderImportJobConfig {
     public Step orderImportStep(JobRepository jobRepository,
                                 PlatformTransactionManager transactionManager,
                                 FlatFileItemReader<RawOrder> orderReader,
-                                // CompositeItemProcessor<RawOrder, Order> compositeOrderProcessor,
-                                OrderItemProcessor orderItemProcessor,
+                                CompositeItemProcessor<RawOrder, Order> compositeOrderProcessor,
+                                //OrderItemProcessor orderItemProcessor,
                                 JdbcBatchItemWriter<Order> orderWriter
                                 //ItemWriter<Order> orderWriter2
                                 ){
@@ -141,8 +141,8 @@ public class OrderImportJobConfig {
         return new StepBuilder("orderImportStep", jobRepository)
                 .<RawOrder, Order>chunk(2, transactionManager)
                 .reader(orderReader)
-                .processor(orderItemProcessor)
-                //.processor(compositeOrderProcessor)
+                //.processor(orderItemProcessor)
+                .processor(compositeOrderProcessor)
                 //.writer(orderWriter2)
                 .writer(orderWriter)
                 .faultTolerant()

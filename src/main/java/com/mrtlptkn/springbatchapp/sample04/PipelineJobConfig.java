@@ -104,7 +104,7 @@ public class PipelineJobConfig {
                 .start(importFlow)
                 .next(orderImportDecider)
                 .on("HIGH_REJECT").to(alertFlow)
-                .from(orderImportDecider)
+                .from(orderImportDecider) // decider yeniden dönmek için -> en son üst satırda alerflow'da kaldık
                 .on("CONTINUE").to(continueFlow)
                 .end().build();
 
